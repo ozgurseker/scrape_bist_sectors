@@ -19,6 +19,8 @@ colnames(df)[2:4] <- c("Symbol", "Firm","Sector")
 df <- df %>% select("Symbol", "Firm","Sector") %>% filter(!is.na(Symbol)) %>% 
   group_by(Symbol) %>% mutate(
   SectorType = c("MainSector","SubSector")[1:n()]
-) %>% pivot_wider(id_cols = c(Symbol, Firm), values_from = Sector, names_from = SectorType)
+) %>% pivot_wider(id_cols = c(Symbol, Firm), values_from = Sector, names_from = SectorType) %>%
+  mutate(Symbol = strsplit(as.character(Symbol), ", ")) %>% 
+  unnest(Symbol)
 
 write_xlsx(df, paste0(dirname(filepath),"/sectorinformation.xlsx"))
